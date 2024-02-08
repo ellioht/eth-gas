@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/tern/v2/migrate"
+	"log"
 	"os"
 )
 
@@ -15,9 +16,13 @@ func RunDBMigrations(ctx context.Context, pool *pgxpool.Pool) error {
 	}
 	defer conn.Release()
 
-	ternMigrator, err := migrate.NewMigrator(ctx, conn.Conn(), "tern")
+	ternMigrator, err := migrate.NewMigrator(ctx, conn.Conn(), "schema_version")
 	if err != nil {
 		return fmt.Errorf("error creating migrator: %w", err)
+	}
+
+	ternMigrator.OnStart = func(seq int32, name string, directionName string, sql string) {
+		log.Println(fmt.Sprintf("Starting migration %d/%d: %s", seq, len(ternMigrator.Migrations), name))
 	}
 
 	path := os.DirFS("./database/migrations")

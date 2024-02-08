@@ -23,7 +23,12 @@ func NewDatabase(pool *pgxpool.Pool) *Database {
 }
 
 func (db *Database) SaveGasPrice(ctx context.Context, record GasPriceRecord) error {
-	query := `INSERT INTO gas_prices (timestamp, gas_price) VALUES ($1, $2)`
+	query := `
+        INSERT INTO gas_prices (id, timestamp, gas_price) 
+        VALUES ($1, $2, $3) 
+        ON CONFLICT (id) 
+        DO UPDATE SET timestamp = EXCLUDED.timestamp, gas_price = EXCLUDED.gas_price
+    `
 
 	tx, err := util.TxBegin(ctx, db.pool)
 	if err != nil {
@@ -31,9 +36,9 @@ func (db *Database) SaveGasPrice(ctx context.Context, record GasPriceRecord) err
 	}
 	defer util.TxRollback(tx, ctx)
 
-	_, err = tx.Exec(ctx, query, record.Timestamp, record.GasPrice)
+	_, err = tx.Exec(ctx, query, 1, record.Timestamp, record.GasPrice)
 	if err != nil {
-		return fmt.Errorf("error inserting gas price record: %w", err)
+		return fmt.Errorf("error upserting gas price record: %w", err)
 	}
 
 	if err = util.TxCommit(ctx, tx); err != nil {
