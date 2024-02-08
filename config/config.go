@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/spf13/viper"
 	"log"
+	"strings"
 )
 
 func LoadConfig() (*Config, error) {
@@ -12,6 +13,9 @@ func LoadConfig() (*Config, error) {
 	viper.AddConfigPath("/etc/appname")
 	viper.AddConfigPath("$HOME/.appname")
 	viper.AddConfigPath(".")
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	viper.AutomaticEnv()
+	viper.AllowEmptyEnv(true)
 
 	if err := viper.ReadInConfig(); err != nil {
 		var configFileNotFoundError viper.ConfigFileNotFoundError

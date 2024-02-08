@@ -2,6 +2,7 @@ package ethclient
 
 import (
 	"context"
+	"fmt"
 	"github.com/ellioht/eth-gas/config"
 	database "github.com/ellioht/eth-gas/db"
 	"log"
@@ -18,7 +19,8 @@ type Client struct {
 }
 
 func NewClient(cfg config.Ethereum) (*Client, error) {
-	rpcClient, err := rpc.Dial(cfg.NodeURL)
+	url := fmt.Sprintf("%s/%s", cfg.NodeURL, cfg.InfuraKey)
+	rpcClient, err := rpc.Dial(url)
 	if err != nil {
 		return nil, err
 	}

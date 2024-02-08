@@ -9,9 +9,10 @@ type Config struct {
 }
 
 type Ethereum struct {
-	NodeURL           string        // URL of the Ethereum node
-	PollingInterval   time.Duration // Interval for polling gas prices
-	HistoricalDataCap int           // Max number of historical records to keep
+	NodeURL           string
+	InfuraKey         string
+	PollingInterval   time.Duration
+	HistoricalDataCap int
 }
 
 type Database struct {

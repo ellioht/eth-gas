@@ -6,8 +6,9 @@ import (
 )
 
 func init() {
-	viper.SetDefault("ethereum.nodeurl", "https://mainnet.infura.io/v3/{API_KEY}")
-	viper.SetDefault("ethereum.pollinginterval", 30*time.Second)
+	viper.SetDefault("ethereum.nodeurl", "https://mainnet.infura.io/v3")
+	viper.SetDefault("ethereum.infurakey", "test")
+	viper.SetDefault("ethereum.pollinginterval", 5*time.Second)
 	viper.SetDefault("ethereum.historicaldatacap", 1000)
 
 	viper.SetDefault("database.poolsize", 5)
