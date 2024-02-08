@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: eth_gas_postgres
+    environment:
+      POSTGRES_USER: ethgas
+      POSTGRES_PASSWORD: ethgas_pass
+      POSTGRES_DB: ethgas
+    ports:
+      - "5434:5432"
+    volumes:
+      - ethgas_db_postgres-data:/var/lib/postgresql/data
+      - ./initdb:/database-entrypoint-initdb.d
+
+volumes:
+  ethgas_db_postgres-data:
